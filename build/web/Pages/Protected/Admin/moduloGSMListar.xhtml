@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Módulos GSM</title>
+    </h:head>
+    <ui:decorate template="../Template/standardAdmin.xhtml">
+        <ui:define name="conteudo">
+            <p:panel header="Módulos GSM..." style="text-align: left">
+                <h:form id="frmTblModuloGSM">
+                    <p:dataTable 
+                        id="tblModuloGSM"
+                        value="#{moduloGSMMB.getAllGSMs()}" var="p" 
+                        emptyMessage="Nenhum registro encontrado..."
+                        widgetVar="moduloGSMListarTable"                                     
+                        rowKey="#{p.id_gsm}" selectionMode="single"                                
+                        paginator="true" rows="10" rowsPerPageTemplate="5,10,15"
+                        >
+                        
+                        <f:facet name="header">
+                            <p:outputPanel>  
+                                <div style="text-align: left; float: left">
+                                   <p:commandButton value="Novo" title="Cadastrar Novo Módulo GSM" image="ui-icon-document" oncomplete="dialogModuloGSM.show();" update=":frmModuloGSMModal">                                        
+                                        <f:setPropertyActionListener target="#{moduloGSMMB.addNewGSM}" value="true" />
+                                        <f:setPropertyActionListener target="#{moduloGSMMB.GSM}" value="#{null}" />
+                                    </p:commandButton>
+                                </div>                                                                
+                            </p:outputPanel>                            
+                        </f:facet>
+                        
+                        <p:columnGroup type="header">
+                            <p:row>
+                                <p:column rowspan="2" headerText="Cód" style="text-align: left; width: 20px" 
+                                          filterBy="#{p.id_gsm}" filterStyle="display: none" />                                
+                                <p:column rowspan="2" headerText="Nome" style="text-align: left" 
+                                          filterBy="#{p.nome_gsm}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="CSQ" style="text-align: left" 
+                                          filterBy="#{p.csq}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="Crédito Pré-Pago" style="text-align: left; width: 360px" 
+                                          filterBy="#{p.credito}" filterStyle="display: none" />                                
+                                <p:column rowspan="2" headerText="Criado" style="text-align: left; width: 160px" 
+                                            filterBy="#{p.criado}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="Modificado" style="text-align: left; width: 160px" 
+                                            filterBy="#{p.modificado}" filterStyle="display: none" />
+                                <p:column colspan="2" headerText="Ações" />
+                            </p:row>
+
+                            <p:row>
+                                <p:column headerText="Alterar" style="text-align: center; font-style: italic; width: 1px" />
+                                <p:column headerText="Excluir" style="text-align: center; font-style: italic; width: 1px" />
+                            </p:row>
+                        </p:columnGroup>
+                        
+                        <p:column style="text-align: center; width: 20px">
+                            <h:outputLabel value="#{p.id_gsm}" />                    
+                        </p:column>
+
+                        <p:column style="text-align: center">
+                            <h:outputLabel value="#{p.nome_gsm}" />                    
+                        </p:column>             
+
+                        <p:column style="text-align: center">
+                            <h:outputLabel value="#{p.csq}" />                    
+                        </p:column>
+                        
+                        <p:column style="text-align: center">
+                            <h:outputLabel value="#{p.credito}" />                    
+                        </p:column>                       
+                        
+                        <p:column style="text-align: center">
+                            <h:outputLabel value="#{p.criado}" />                    
+                        </p:column>
+                        
+                        <p:column style="text-align: center">
+                            <h:outputLabel value="#{p.modificado}" />                    
+                        </p:column>
+
+                        <p:column style="text-align: center; width: 1px">
+                            <p:commandButton value="Alterar" image="ui-icon-pencil" title="Alterar Módulo GSM" 
+                                             update=":frmModuloGSMModal" oncomplete="dialogModuloGSM.show();" >                                    
+                                <f:setPropertyActionListener target="#{moduloGSMMB.addNewGSM}" value="false" />
+                                <f:setPropertyActionListener target="#{moduloGSMMB.GSM}" value="#{p}" />                                                                        
+                            </p:commandButton>                                
+                        </p:column>                                 
+
+                        <p:column style="text-align: center; width: 1px">
+                            <p:commandButton value="Excluir" image="ui-icon-trash" title="Excluir Módulo GSM"
+                                                onclick="confirmation.show();"
+                                                update=":frmRemoveModuloGSM" >
+                                <f:setPropertyActionListener target="#{moduloGSMMB.addNewGSM}" value="false" />
+                                <f:setPropertyActionListener target="#{moduloGSMMB.GSM}" value="#{p}" />
+                            </p:commandButton> 
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:outputPanel>
+                                <div style="text-align: left; float: left">
+                                    <p:ajaxStatus id="ajaxStatusPanel">  
+                                        <f:facet name="start">  
+                                            <div style="background-color: white; color: black; vertical-align: middle">
+                                                Carregando...
+                                            </div>
+                                        </f:facet> 
+                                        <f:facet name="complete">  
+                                            <h:outputText value="" />  
+                                        </f:facet>  
+                                    </p:ajaxStatus>
+                                </div>
+                                <!-- <div style="text-align: right; float: right">                                    
+                                    <h:outputLabel value="Quantidade: " />
+                                    <h:outputText value=""/>
+                                </div> -->
+                            </p:outputPanel>
+                                                                                   
+                        </f:facet>
+                    </p:dataTable>
+                </h:form>
+                
+                <p:dialog id="dialog" header="ModuloGSM" widgetVar="dialogModuloGSM" 
+                            appendToBody="true" resizable="true" closable="false"
+                            modal="true" showEffect="fade" hideEffect="fade" width="500">             
+
+                    <h:form id="frmModuloGSMModal">
+                        <p:growl id="messageGrowl2" showDetail="false" life="3000">
+                            <h:panelGrid id="infosModuloGSM" columns="3" style="margin-bottom:10px">
+                                <p:outputLabel for="id_gsm" value="Código:" />
+                                <p:inputText id="id_gsm" value="#{moduloGSMMB.GSM.id_gsm}" 
+                                             required="true" requiredMessage="Valor inválido." size="5"/>
+                                <p:message for="id_gsm" display="text"/> 
+
+                                <p:outputLabel for="nome_gsm" value="Nome:" />
+                                <p:inputText id="nome_gsm" value="#{moduloGSMMB.GSM.nome_gsm}" 
+                                                required="true" requiredMessage="Valor inválido." size="35" maxlength="100"/>
+                                <p:message for="nome_gsm" display="text" /> 
+                                
+                            </h:panelGrid>
+                            <p:separator />
+                            <p:commandButton value="Salvar" image="ui-icon-disk" title="Salvar"
+                                             actionListener="#{moduloGSMMB.salvar()}" 
+                                             update="infosModuloGSM,:frmTblModuloGSM, frmModuloGSMModal:messageGrowl2"
+                                             oncomplete="handleRequest(xhr, status, args);"/>                            
+
+                            <script type="text/javascript">  
+                                function handleRequest(xhr, status, args) 
+                                {  
+                                    if (!args.validationFailed)
+                                    {                                            
+                                        dialogModuloGSM.hide();  
+                                    }
+                                    else
+                                        {
+                                            jQuery('#dialog').effect("shake", { times:3 }, 100);
+                                        }
+                                }  								  
+                            </script>                        
+                            <p:commandButton value="Cancelar" title="Cancelar" 
+                                            immediate="true" oncomplete="dialogModuloGSM.hide();" 
+                                            image="ui-icon-close" />
+                        </p:growl>                            
+                    </h:form>                    
+                </p:dialog>  
+                
+                <p:confirmDialog id="confirmDialog" message="Confirma exclusão do módulo GSM?"  
+                                header="Confirme" severity="alert" widgetVar="confirmation" appendToBody="true" >                    
+
+                    <h:form id="frmRemoveModuloGSM">                               
+                        <p:growl id="messageGrowl3" showDetail="false" life="3000">
+                            <p:commandButton value="Sim"
+                                                oncomplete="confirmation.hide()" image="ui-icon-trash"
+                                                update=":frmTblModuloGSM, frmRemoveModuloGSM:messageGrowl3"
+                                                actionListener="#{moduloGSMMB.excluir()}"/>  
+                            <p:commandButton immediate="true" value="Não" 
+                                                image="ui-icon-cancel"
+                                                onclick="confirmation.hide()" />
+                        </p:growl>
+                                                                 
+                    </h:form>                  
+                </p:confirmDialog>
+            </p:panel>
+        </ui:define>
+    </ui:decorate>
+</html>

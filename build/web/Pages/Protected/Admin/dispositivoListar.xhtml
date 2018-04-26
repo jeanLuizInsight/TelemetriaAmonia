@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Dispositivos</title>
+    </h:head>
+    <ui:decorate template="../Template/standardAdmin.xhtml">
+        <ui:define name="conteudo">
+            <p:panel header="Dispositivos..." style="text-align: left">
+                <h:form id="frmTblDispositivo">
+                    <p:dataTable 
+                        id="tblDispositivo"
+                        value="#{dispositivoMB.getAllDisps()}" var="p" 
+                        emptyMessage="Nenhum registro encontrado..."
+                        widgetVar="dispositivoListarTable"                                     
+                        rowKey="#{p.id_dis}" selectionMode="single"                                
+                        paginator="true" rows="10" rowsPerPageTemplate="5,10,15"
+                        >
+                        
+                        <f:facet name="header">
+                            <p:outputPanel>  
+                                <div style="text-align: left; float: left">
+                                   <p:commandButton value="Novo" title="Cadastrar Novo Dispositivo" image="ui-icon-document" oncomplete="dialogDispositivo.show();" update=":frmDispositivoModal">                                        
+                                       <f:setPropertyActionListener target="#{dispositivoMB.addNewDisp}" value="true" />
+                                       <f:setPropertyActionListener target="#{dispositivoMB.disp}" value="#{null}" />
+                                    </p:commandButton>
+                                </div>                                                                
+                            </p:outputPanel>                            
+                        </f:facet>
+                        
+                        <p:columnGroup type="header">
+                            <p:row>
+                                <p:column rowspan="2" headerText="Cód" style="text-align: left; width: 5px" 
+                                          filterBy="#{p.id_dis}" filterStyle="display: none" />                                
+                                <p:column rowspan="2" headerText="Usuário" style="text-align: left" 
+                                          filterBy="#{p.id_usu.id_usu}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="GSM" style="text-align: left" 
+                                          filterBy="#{p.id_gsm.id_gsm}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="Nome" style="text-align: left; width: 50px" 
+                                          filterBy="#{p.nome_dis}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="Conexão" style="text-align: left; width: 160px"
+                                          filterBy="#{p.conexao}" filterStyle="diplay: none" />
+                                <p:column rowspan="2" headerText="Criado" style="text-align: left; width: 160px" 
+                                          filterBy="#{p.criado}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="Modificado" style="text-align: left; width: 160px" 
+                                            filterBy="#{p.modificado}" filterStyle="display: none" />
+                                <p:column colspan="2" headerText="Ações" />
+                            </p:row>
+
+                            <p:row>
+                                <p:column headerText="Alterar" style="text-align: center; font-style: italic; width: 1px" />
+                                <p:column headerText="Excluir" style="text-align: center; font-style: italic; width: 1px" />
+                            </p:row>
+                        </p:columnGroup>
+                        
+                        <p:column style="text-align: center; width: 5px">
+                            <h:outputLabel value="#{p.id_dis}" />                    
+                        </p:column>
+
+                        <p:column style="text-align: center">
+                            <h:outputLabel value="#{p.id_usu.id_usu}" />                    
+                        </p:column>             
+
+                        <p:column style="text-align: center">
+                            <h:outputLabel value="#{p.id_gsm.id_gsm}" />                    
+                        </p:column>
+                        
+                        <p:column style="text-align: center">
+                            <h:outputLabel value="#{p.nome_dis}" />                    
+                        </p:column>                       
+                        
+                        <p:column style="text-align: center">
+                            <h:outputLabel value="#{p.conexao}" />                    
+                        </p:column>
+                        
+                        <p:column style="text-align: center">
+                            <h:outputLabel value="#{p.criado}" />                    
+                        </p:column>
+                        
+                        <p:column style="text-align: center">
+                            <h:outputLabel value="#{p.modificado}" />                    
+                        </p:column>
+
+                        <p:column style="text-align: center; width: 1px">
+                            <p:commandButton value="Alterar" image="ui-icon-pencil" title="Alterar Dispositivo" 
+                                             update=":frmDispositivoModal" oncomplete="dialogDispositivo.show();" >                                    
+                                <f:setPropertyActionListener target="#{dispositivoMB.addNewDisp}" value="false" />
+                                <f:setPropertyActionListener target="#{dispositivoMB.disp}" value="#{p}" />                                                                        
+                            </p:commandButton>                                
+                        </p:column>                                 
+
+                        <p:column style="text-align: center; width: 1px">
+                            <p:commandButton value="Excluir" image="ui-icon-trash" title="Excluir Dispositivo"
+                                                onclick="confirmation.show();"
+                                                update=":frmRemoveDispositivo" >
+                                <f:setPropertyActionListener target="#{dispositivoMB.addNewDisp}" value="false" />
+                                <f:setPropertyActionListener target="#{dispositivoMB.disp}" value="#{p}" />
+                            </p:commandButton> 
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:outputPanel>
+                                <div style="text-align: left; float: left">
+                                    <p:ajaxStatus id="ajaxStatusPanel">  
+                                        <f:facet name="start">  
+                                            <div style="background-color: white; color: black; vertical-align: middle">
+                                                Carregando...
+                                            </div>
+                                        </f:facet> 
+                                        <f:facet name="complete">  
+                                            <h:outputText value="" />  
+                                        </f:facet>  
+                                    </p:ajaxStatus>
+                                </div>
+                                <!-- <div style="text-align: right; float: right">                                    
+                                    <h:outputLabel value="Quantidade: " />
+                                    <h:outputText value=""/>
+                                </div> -->
+                            </p:outputPanel>
+                                                                                   
+                        </f:facet>
+                    </p:dataTable>
+                </h:form>
+                
+                <p:dialog id="dialog" header="Dispositivo" widgetVar="dialogDispositivo" 
+                            appendToBody="true" resizable="true" closable="false"
+                            modal="true" showEffect="fade" hideEffect="fade" width="500">             
+
+                    <h:form id="frmDispositivoModal">
+                        <p:growl id="messageGrowl4" showDetail="false" life="3000">
+                            <h:panelGrid id="infosDispositivo" columns="3" style="margin-bottom:10px">
+                                <p:outputLabel for="id_dis" value="Código:" />
+                                <p:inputText id="id_dis" value="#{dispositivoMB.disp.id_dis}" 
+                                             required="true" requiredMessage="Valor inválido." size="5"/>
+                                <p:message for="id_dis" display="text"/> 
+
+                                <p:outputLabel for="nome_dis" value="Nome Dispositivo:" />
+                                <p:inputText id="nome_dis" value="#{dispositivoMB.disp.nome_dis}" 
+                                             required="true" requiredMessage="Valor inválido." size="20"/>
+                                <p:message for="nome_dis" display="text"/>
+                                
+                                <p:outputLabel for="id_usu" value="Usuário:" /> 
+                                <p:selectOneMenu id="id_usu" value="#{dispositivoMB.disp.id_usu}"
+                                                 required="true" style="width: 180px" >
+                                    <f:converter converterId="converteUsuario" />
+                                    <f:selectItems value="#{dispositivoMB.getUsuariosTipoClientes()}"
+                                                   var="clientes" itemValue="#{clientes}" itemLabel="#{clientes.nome_usu}"/>
+                                </p:selectOneMenu> 
+                                <p:message for="id_usu" display="text"/>
+                                
+                                <p:outputLabel for="id_gsm" value="Módulo GSM:" />
+                                <p:selectOneMenu id="id_gsm" value="#{dispositivoMB.disp.id_gsm}"
+                                                 required="true" style="width: 180px" >
+                                    <f:converter converterId="converteGSM" />
+                                    <f:selectItems value="#{dispositivoMB.getModulosGSM()}"
+                                                   var="g" itemValue="#{g}" itemLabel="#{g.nome_gsm}" />
+                                </p:selectOneMenu> 
+                                <p:message for="id_gsm" display="text"/>
+                            </h:panelGrid>
+                            <p:separator />
+                            <p:commandButton value="Salvar" image="ui-icon-disk" title="Salvar"
+                                             actionListener="#{dispositivoMB.salvar()}" ajax="false"
+                                             update="infosDispositivo, :frmTblDispositivo, frmDispositivoModal:messageGrowl4"
+                                             oncomplete="handleRequest(xhr, status, args);"/>                            
+
+                            <script type="text/javascript">  
+                                function handleRequest(xhr, status, args) 
+                                {  
+                                    if (!args.validationFailed)
+                                    {                                            
+                                        dialogDispositivo.hide();  
+                                    }
+                                    else
+                                        {
+                                            jQuery('#dialog').effect("shake", { times:3 }, 100);
+                                        }
+                                }  								  
+                            </script>                        
+                            <p:commandButton value="Cancelar" title="Cancelar" 
+                                            immediate="true" oncomplete="dialogDispositivo.hide();" 
+                                            image="ui-icon-close" />
+                        </p:growl>                            
+                    </h:form>                    
+                </p:dialog>  
+                
+                <p:confirmDialog id="confirmDialog" message="Confirma exclusão do Dispositivo?"  
+                                header="Confirme" severity="alert" widgetVar="confirmation" appendToBody="true" >                    
+
+                    <h:form id="frmRemoveDispositivo">                               
+                        <p:growl id="messageGrowl5" showDetail="false" life="3000">
+                            <p:commandButton value="Sim"
+                                                oncomplete="confirmation.hide()" image="ui-icon-trash"
+                                                update=":frmTblDispositivo, frmRemoveDispositivo:messageGrowl5"
+                                                actionListener="#{dispositivoMB.excluir()}"/>  
+                            <p:commandButton immediate="true" value="Não" 
+                                                image="ui-icon-cancel"
+                                                onclick="confirmation.hide()" />
+                        </p:growl>                                                                 
+                    </h:form>                  
+                </p:confirmDialog>
+            </p:panel>
+        </ui:define>
+    </ui:decorate>
+</html>

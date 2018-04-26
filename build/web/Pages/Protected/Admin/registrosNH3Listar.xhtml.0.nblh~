@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Registros de NH³</title>
+    </h:head>
+    <ui:decorate template="../Template/standardAdmin.xhtml">
+        <ui:define name="conteudo">
+            <p:panel header="Registros de NH³..." style="text-align: left" id="painelPrincipal">
+                <h:form id="frmTblAmonia">
+                    <p:dataTable 
+                        id="tblAmonia"
+                        value="#{registroConcentracaoAmoniaMB.getRegistrosDoDispositivo()}" var="p" 
+                        emptyMessage="Nenhum registro encontrado... Selecione um cliente e um dispositivo."
+                        widgetVar="amoniaListarTable"                                     
+                        rowKey="p" selectionMode="single"                                
+                        paginator="true" rows="10" rowsPerPageTemplate="5,10,15"
+                        >
+                        
+                        <f:facet name="header">
+                            <p:outputPanel id="selects">  
+                                <div style="text-align: left; float: left">
+                                    <p:selectOneMenu id="selectUsu" value="#{registroConcentracaoAmoniaMB.usuSelecionado}"
+                                                     required="true" style="width: 200px" valueChangeListener="#{registroConcentracaoAmoniaMB.usuarioChangeListener}"
+                                                     effect="fade" converter="converteUsuario">
+                                        <f:selectItem itemLabel="Selecione o Cliente" itemValue="#{null}" />                                        
+                                        <f:selectItems value="#{registroConcentracaoAmoniaMB.getUsuariosClientes()}"
+                                                       var="clientes" itemValue="#{clientes}" itemLabel="#{clientes.nome_usu}"/>
+                                        <f:ajax render="PGselectDis" execute="selectUsu" />                                        
+                                    </p:selectOneMenu>
+                                </div>
+                                <div style="text-align: left; float: left">
+                                    <h:panelGroup id="PGselectDis">
+                                        <p:selectOneMenu id="selectDis" value="#{registroConcentracaoAmoniaMB.dispSelecionado}"
+                                                     required="true" style="width: 200px" valueChangeListener="#{registroConcentracaoAmoniaMB.dispositivoChangeListener}" 
+                                                     effect="fade" converter="converteDispositivo" >
+                                        <f:selectItem itemLabel="Selecione o Dispositivo" itemValue="#{null}" /> 
+                                        <f:selectItems value="#{registroConcentracaoAmoniaMB.dispositivosDoCliente}" 
+                                                       var="d" itemValue="#{d}" itemLabel="#{d.nome_dis}" />
+                                        <p:ajax id="ajaxDis" event="change" update=":frmTblAmonia" process="@this" /> 
+                                    </p:selectOneMenu>
+                                    </h:panelGroup>                                    
+                                </div>
+                            </p:outputPanel>                            
+                        </f:facet>
+                        
+                        <p:columnGroup type="header">
+                            <p:row>
+                                <p:column rowspan="2" headerText="Data" style="text-align: center; width: 80px" 
+                                          filterBy="#{p.data_reg}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="Hora" style="text-align: center; width: 70px" 
+                                          filterBy="#{p.hora_reg}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="NH³ Atual" style="text-align: center; width: 5px" 
+                                          filterBy="#{p.conc_medida_reg}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="Hora Menor NH³" style="text-align: center; width: 80px"
+                                          filterBy="#{p.data_hora_cme}" filterStyle="diplay: none" />
+                                <p:column rowspan="2" headerText="Menor NH³" style="text-align: center; width: 5px" 
+                                          filterBy="#{p.conc_menor}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="Hora maior NH³" style="text-align: center; width: 80px" 
+                                          filterBy="#{p.data_hora_cma}" filterStyle="display: none" />
+                                <p:column rowspan="2" headerText="Maior NH³" style="text-align: center; width: 5px" 
+                                          filterBy="#{p.conc_maior}" filterStyle="display: none" />
+                                <p:column colspan="2" headerText="Ação" />
+                            </p:row>
+
+                            <p:row>
+                                <p:column headerText="Excluir" style="text-align: center; font-style: italic; width: 1px" />
+                            </p:row>
+                        </p:columnGroup>
+                        
+                        <p:column style="text-align: center; width: 80px">
+                            <h:outputLabel value="#{p.data_reg}" />                    
+                        </p:column>
+
+                        <p:column style="text-align: center; width: 70px">
+                            <h:outputLabel value="#{p.hora_reg}" />                    
+                        </p:column>             
+
+                        <p:column style="text-align: center; width: 5px">
+                            <h:outputLabel value="#{p.conc_medida_reg}" />                    
+                        </p:column>
+                        
+                        <p:column style="text-align: center; width: 80px">
+                            <h:outputLabel value="#{p.data_hora_cme}" />                    
+                        </p:column>                       
+                        
+                        <p:column style="text-align: center; width: 5px">
+                            <h:outputLabel value="#{p.conc_menor}" />                    
+                        </p:column>
+                        
+                        <p:column style="text-align: center; width: 80px">
+                            <h:outputLabel value="#{p.data_hora_cma}" />                    
+                        </p:column>
+                        
+                        <p:column style="text-align: center; width: 5px">
+                            <h:outputLabel value="#{p.conc_maior}" />                    
+                        </p:column>
+                        
+                        <p:column style="text-align: center; width: 1px">
+                            <p:commandButton value="Excluir" image="ui-icon-trash" title="Excluir Registro de NH³"
+                                                onclick="confirmation.show();"
+                                                update=":frmRemoveAmonia" >
+                                <f:setPropertyActionListener target="#{registroConcentracaoAmoniaMB.regNH3}" value="#{p}" />
+                            </p:commandButton> 
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:outputPanel>
+                                <div style="text-align: left; float: left">
+                                    <p:ajaxStatus id="ajaxStatusPanel">  
+                                        <f:facet name="start">  
+                                            <div style="background-color: white; color: black; vertical-align: middle">
+                                                Carregando...
+                                            </div>
+                                        </f:facet> 
+                                        <f:facet name="complete">  
+                                            <h:outputText value="" />  
+                                        </f:facet>  
+                                    </p:ajaxStatus>
+                                </div>
+                                <!--<div style="text-align: right; float: right">                                    
+                                    <h:outputLabel value="Quantidade: " />
+                                    <h:outputText value="{registroConcentracaoAmoniaMB.totalRegistros()}"/>
+                                </div>-->
+                            </p:outputPanel>
+                                                                                   
+                        </f:facet>
+                    </p:dataTable>
+                </h:form>
+                
+                <p:confirmDialog id="confirmDialog" message="Confirma exclusão do registro de NH³?"  
+                                header="Confirme" severity="alert" widgetVar="confirmation" appendToBody="true" >                    
+
+                    <h:form id="frmRemoveAmonia">                               
+                        <p:growl id="messageGrowl6" showDetail="false" life="3000">
+                            <p:commandButton value="Sim"
+                                                oncomplete="confirmation.hide()" image="ui-icon-trash"
+                                                update=":frmTblAmonia, frmRemoveAmonia:messageGrowl6"
+                                                actionListener="#{registroConcentracaoAmoniaMB.excluir()}"/>  
+                            <p:commandButton immediate="true" value="Não" 
+                                                image="ui-icon-cancel"
+                                                onclick="confirmation.hide()" />
+                        </p:growl>                                                                 
+                    </h:form>                  
+                </p:confirmDialog>
+            </p:panel>
+        </ui:define>
+    </ui:decorate>
+</html>

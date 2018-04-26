@@ -1,0 +1,85 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package br.com.telemetriaAmonia.model;
+
+import java.io.Serializable;
+import java.sql.Timestamp;
+import javax.persistence.*;
+
+/**
+ *
+ * @author Jean Luiz
+ */
+@Entity(name="dispositivo")
+@NamedQueries({
+    @NamedQuery(name="dispositivo.findAllDisp", query="FROM dispositivo"),
+    @NamedQuery(name="dispositivo.findDispByCliente", query="FROM dispositivo WHERE id_usu = :idUsu")
+
+})
+public class Dispositivo implements Serializable {
+    //query buscar dispositivos por usuário
+    public static final String FIND_DISP_BY_CLIENTE = "dispositivo.findDispByCliente";
+    
+    @Id
+    private int id_dis;    
+    @ManyToOne
+    @JoinColumn(name = "usuario.id_usu")
+    private Usuario id_usu;    
+    @ManyToOne
+    @JoinColumn(name = "modulo_gsm.id_gsm")
+    private ModuloGSM id_gsm;    
+    private String nome_dis;   
+    private Timestamp criado;
+    private Timestamp modificado;
+
+    public Timestamp getCriado() {
+        return criado;
+    }
+
+    public void setCriado(Timestamp criado) {
+        this.criado = criado;
+    }
+
+    public int getId_dis() {
+        return id_dis;
+    }
+
+    public void setId_dis(int id_dis) {
+        this.id_dis = id_dis;
+    }
+
+    public ModuloGSM getId_gsm() {
+        return id_gsm;
+    }
+
+    public void setId_gsm(ModuloGSM id_gsm) {
+        this.id_gsm = id_gsm;
+    }
+
+    public Usuario getId_usu() {
+        return id_usu;
+    }
+
+    public void setId_usu(Usuario id_usu) {
+        this.id_usu = id_usu;
+    }
+
+    public Timestamp getModificado() {
+        return modificado;
+    }
+
+    public void setModificado(Timestamp modificado) {
+        this.modificado = modificado;
+    }
+
+    public String getNome_dis() {
+        return nome_dis;
+    }
+
+    public void setNome_dis(String nome_dis) {
+        this.nome_dis = nome_dis;
+    }    
+    
+}
